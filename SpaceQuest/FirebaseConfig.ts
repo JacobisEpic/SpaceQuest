@@ -1,21 +1,40 @@
-// Import the functions you need from the SDKs you need
+// // FirebaseConfig.ts
+
+// // Import the functions you need from the Firebase SDKs
+// import { initializeApp } from "firebase/app";
+// import { getAuth } from "firebase/auth"; // If using Firebase Authentication
+// import { getDatabase } from "firebase/database";
+
+// const firebaseConfig = {
+//   apiKey: "AIzaSyCJgc6hRZ8KB05hc_R1zP7E6clpX1hK9OM",
+//   authDomain: "spacequest-9a55d.firebaseapp.com",
+//   projectId: "spacequest-9a55d",
+//   storageBucket: "spacequest-9a55d.firebasestorage.app",
+//   messagingSenderId: "357401255778",
+//   appId: "1:357401255778:web:aa1043af706c202d80563b"
+// };
+
+// // Initialize Firebase
+// const app = initializeApp(firebaseConfig);
+// const auth = getAuth(app); // Initialize Firebase Authentication
+// const database = getDatabase(app); // Initialize Firebase Realtime Database
+
+// export { app, auth, database };
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import { getDatabase } from "firebase/database";
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyD3skh5Wf_HQEv1YG4WIZ3TbQBYu3BXPRE",
-  authDomain: "spacequest-51bcb.firebaseapp.com",
-  projectId: "spacequest-51bcb",
-  storageBucket: "spacequest-51bcb.firebasestorage.app",
-  messagingSenderId: "878113482228",
-  appId: "1:878113482228:web:ae05c189dedcaeefac45a1",
-  measurementId: "G-D1JL9ZB6J4"
+  apiKey: "AIzaSyCJgc6hRZ8KB05hc_R1zP7E6clpX1hK9OM",
+  authDomain: "spacequest-9a55d.firebaseapp.com",
+  projectId: "spacequest-9a55d",
+  storageBucket: "spacequest-9a55d.appspot.com", // Corrected format
+  messagingSenderId: "357401255778",
+  appId: "1:357401255778:web:aa1043af706c202d80563b"
 };
 
-// Initialize Firebase
-export const FIREBASE_APP = initializeApp(firebaseConfig);
-export const FIREBASE_AUTH = getAuth(FIREBASE_APP);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const database = getDatabase(app);
+
+export { app, auth, database };

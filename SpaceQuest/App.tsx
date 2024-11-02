@@ -1,45 +1,44 @@
 import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Login from './app/screens/Logins'; // Ensure the path matches the file location
-import { StatusBar } from 'expo-status-bar';
-import { onAuthStateChanged, User } from 'firebase/auth';
-import { FIREBASE_AUTH } from './FirebaseConfig';
+import Login from './app/screens/Logins'; // Ensure this is the correct path
 import List from './app/screens/List';
 import Details from './app/screens/Details';
+import Profile from './app/screens/Profile';
+import Leaderboard from './app/screens/Leaderboard'; // Make sure Leaderboard is correctly imported
+import { StatusBar } from 'expo-status-bar';
+import { onAuthStateChanged } from 'firebase/auth';
+import { app, auth, database } from './FirebaseConfig'; // Ensure Firebase Auth is correctly set up
 
 const Stack = createNativeStackNavigator();
-const InsideStack = createNativeStackNavigator();
 
-function InsideLayout() {
-  return (
-    <InsideStack.Navigator>
-      <InsideStack.Screen name="My todos" component={List} />
-      <InsideStack.Screen name="Details" component={Details} />
-    </InsideStack.Navigator>
-  );
-}
-
-export default function App() {
-  const [user, setUser] = useState<User | null>(null);
+function App() {
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, currentUser => {
       setUser(currentUser);
     });
-    return () => unsubscribe(); // Clean up the subscription
+    return () => unsubscribe(); // Cleanup subscription on component unmount
   }, []);
 
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
         {user ? (
-          <Stack.Screen name="Inside" component={InsideLayout} options={{ headerShown: false }} />
+          <>
+            <Stack.Screen name="List" component={List} />
+            <Stack.Screen name="Details" component={Details} />
+            <Stack.Screen name="Profile" component={Profile} />
+            <Stack.Screen name="Leaderboard" component={Leaderboard} />
+          </>
         ) : (
-          <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+          <Stack.Screen name="Login" component={Login} />
         )}
       </Stack.Navigator>
       <StatusBar style="auto" />
     </NavigationContainer>
   );
 }
+
+export default App;

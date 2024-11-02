@@ -1,10 +1,11 @@
-import { View, Text } from 'react-native';
+// Details.tsx
 import React from 'react';
+import { View, Text } from 'react-native';
 
 const Details = () => {
   return (
-    <View>
-      <Text>Details</Text>
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>Details Screen</Text>
     </View>
   );
 };
