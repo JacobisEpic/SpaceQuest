@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trivia Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            max-width: 600px;
+            line-height: 1.6;
+        }
+        .question {
+            margin-bottom: 20px;
+        }
+        .loading {
+            font-size: 1.2em;
+            color: #333;
+        }
+        .error {
+            color: red;
+        }
+        .submit-btn {
+            padding: 10px 15px;
+            font-size: 1em;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Trivia Questions</h1>
+    <div id="trivia-container"></div>
+    <button class="submit-btn" onclick="submitAnswers()">Submit Answers</button>
+
+    <script>
+        let correctAnswers = []; // Store correct answers for validation
+
+        // Fetch trivia questions from the Flask API
+        async function fetchTrivia(amount = 8, category = '', difficulty = '', type = '') {
+            const params = new URLSearchParams({ amount, category, difficulty, type });
+            const apiUrl = `http://127.0.0.1:5000/api/trivia?${params.toString()}`;
+            const container = document.getElementById('trivia-container');
+            container.innerHTML = '<p class="loading">Loading questions...</p>';
+
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) throw new Error("Failed to fetch trivia questions");
+
+                const data = await response.json();
+                displayTrivia(data.results);
+            } catch (error) {
+                console.error("Error:", error);
+                container.innerHTML = `<p class="error">${error.message}</p>`;
+            }
+        }
+
+        // Display trivia questions in the HTML
+        function displayTrivia(questions) {
+            const container = document.getElementById('trivia-container');
+            container.innerHTML = ''; // Clear loading message
+            correctAnswers = []; // Reset correct answers
+
+            questions.forEach((questionData, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.classList.add('question');
+
+                // Display question text
+                const questionText = document.createElement('p');
+                questionText.innerHTML = `<strong>Q${index + 1}:</strong> ${questionData.question}`;
+                questionDiv.appendChild(questionText);
+
+                // Store correct answer for validation
+                correctAnswers.push(questionData.correct_answer);
+
+                // Shuffle and display answer choices
+                const choices = [...questionData.incorrect_answers, questionData.correct_answer];
+                shuffleArray(choices);
+
+                choices.forEach(choice => {
+                    const choiceLabel = document.createElement('label');
+                    const choiceInput = document.createElement('input');
+                    choiceInput.type = 'radio';
+                    choiceInput.name = `question${index}`;
+                    choiceInput.value = choice;
+                    choiceLabel.appendChild(choiceInput);
+                    choiceLabel.appendChild(document.createTextNode(choice));
+                    questionDiv.appendChild(choiceLabel);
+                    questionDiv.appendChild(document.createElement('br'));
+                });
+
+                container.appendChild(questionDiv);
+            });
+        }
+
+        // Function to submit answers, calculate score, and redirect
+        function submitAnswers() {
+            let score = 0;
+            correctAnswers.forEach((correctAnswer, index) => {
+                // Get selected answer for each question
+                const selectedOption = document.querySelector(`input[name="question${index}"]:checked`);
+                if (selectedOption && selectedOption.value === correctAnswer) {
+                    score++; // Increase score if answer is correct
+                }
+            });
+
+            // Store the score in localStorage and redirect to results page
+            localStorage.setItem("score", score);
+            localStorage.setItem("totalQuestions", correctAnswers.length);
+            window.location.href = "results.html";
+        }
+
+        // Shuffle array function
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // Fetch trivia questions on page load
+        fetchTrivia();
+    </script>
+</body>
+</html>

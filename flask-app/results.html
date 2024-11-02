@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trivia Results</title>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            line-height: 1.6;
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+        }
+        #score {
+            font-size: 2em;
+            color: #4CAF50;
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Your Trivia Results</h1>
+        <div id="score"></div>
+        <button onclick="window.location.href='trivia.html'">Play Again</button>
+    </div>
+
+    <script>
+        // Retrieve score from localStorage and display it
+        const score = localStorage.getItem("score");
+        const totalQuestions = localStorage.getItem("totalQuestions");
+        const scoreContainer = document.getElementById('score');
+
+        if (score !== null && totalQuestions !== null) {
+            scoreContainer.innerHTML = `You scored ${score} out of ${totalQuestions}.`;
+        } else {
+            scoreContainer.innerHTML = "No score available.";
+        }
+
+        // Clear score from localStorage
+        localStorage.removeItem("score");
+        localStorage.removeItem("totalQuestions");
+    </script>
+</body>
+</html>
