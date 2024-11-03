@@ -1,16 +1,26 @@
-// Game2.tsx
 import React, { useState, useEffect } from 'react';
 import { View, Text, Button, StyleSheet, TouchableOpacity, ActivityIndicator, ImageBackground } from 'react-native';
 import he from 'he';
+import { getAuth } from 'firebase/auth';
+import { getDatabase, ref, get, update } from 'firebase/database';
 
-const Game2 = () => {
+const Game2 = ({ navigation }) => {
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [points, setPoints] = useState(0);
+  const [totalPoints, setTotalPoints] = useState(0); // Total points from Firebase
+  const [hasUpdatedPoints, setHasUpdatedPoints] = useState(false); // Flag to ensure points are only added once
+
+  const auth = getAuth();
+  const user = auth.currentUser;
 
   useEffect(() => {
     fetchTriviaQuestions();
+    if (user) {
+      fetchUserPoints(); // Fetch the user's current total points when the component mounts
+    }
   }, []);
 
   const fetchTriviaQuestions = async () => {
@@ -25,8 +35,26 @@ const Game2 = () => {
     }
   };
 
+  const fetchUserPoints = async () => {
+    try {
+      const database = getDatabase();
+      const pointsRef = ref(database, `users/${user.uid}/points`);
+      const snapshot = await get(pointsRef);
+      if (snapshot.exists()) {
+        setTotalPoints(snapshot.val() || 0);
+      } else {
+        console.log('No points data available');
+      }
+    } catch (error) {
+      console.error('Failed to fetch user points:', error);
+    }
+  };
+
   const handleAnswerSelect = (answer) => {
     setSelectedAnswer(answer);
+    if (answer === questions[currentQuestionIndex].correct_answer) {
+      setPoints(points + 1); // Increment points for correct answers
+    }
 
     // Move to the next question after a short delay
     setTimeout(() => {
@@ -35,18 +63,43 @@ const Game2 = () => {
     }, 1000);
   };
 
+  const savePointsToDatabase = async () => {
+    if (user && !hasUpdatedPoints) {
+      try {
+        const database = getDatabase();
+        const pointsRef = ref(database, `users/${user.uid}/points`);
+        const updatedPoints = totalPoints + points;
+
+        await update(pointsRef, { points: updatedPoints });
+        console.log('Points updated successfully in Firebase');
+        setTotalPoints(updatedPoints);
+        setHasUpdatedPoints(true); // Set flag to true to prevent re-adding points
+      } catch (error) {
+        console.error('Failed to update points:', error);
+      }
+    } else if (!user) {
+      console.error('No user is logged in.');
+    }
+  };
+
   if (loading) {
     return <ActivityIndicator size="large" color="#0000ff" />;
   }
 
   if (currentQuestionIndex >= questions.length) {
+    // Game is complete; show results and update Firebase
+    savePointsToDatabase();
     return (
       <ImageBackground source={require('../../assets/space2.jpeg')} style={styles.container}>
         <View style={styles.quizContainer}>
           <Text style={styles.resultText}>You have completed the quiz!</Text>
+          <Text style={styles.resultText}>Your Score: {points}</Text>
+          <Text style={styles.resultText}>Total Points: {totalPoints + points}</Text>
           <Button title="Play Again" onPress={() => {
             setCurrentQuestionIndex(0);
             setSelectedAnswer(null);
+            setPoints(0);
+            setHasUpdatedPoints(false); // Reset the flag for a new game
           }} />
         </View>
       </ImageBackground>
@@ -58,6 +111,10 @@ const Game2 = () => {
 
   return (
     <ImageBackground source={require('../../assets/space2.jpeg')} style={styles.container}>
+      <View style={styles.header}>
+        <Button title="Back" color="#FF0000" onPress={() => navigation.goBack()} />
+        <Text style={styles.pointsText}>Points: {points}</Text>
+      </View>
       <View style={styles.quizContainer}>
         <Text style={styles.questionText}>{he.decode(currentQuestion.question)}</Text>
         <View style={styles.optionsContainer}>
@@ -90,6 +147,19 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: '100%',
+  },
+  header: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 20,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  pointsText: {
+    fontSize: 18,
+    color: 'yellow',
+    fontWeight: 'bold',
   },
   quizContainer: {
     flex: 1,
