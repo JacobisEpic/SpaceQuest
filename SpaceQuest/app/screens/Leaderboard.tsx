@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Button, StyleSheet, ScrollView, ImageBackground } from 'react-native';
 import { database } from '../../FirebaseConfig';
 import { ref, onValue, off, DataSnapshot } from 'firebase/database';
+import { StackNavigationProp } from '@react-navigation/stack';
+
+type Props = {
+    navigation: StackNavigationProp<any>;
+};
 
 interface User {
     id: string;
@@ -10,7 +15,7 @@ interface User {
     username: string;
 }
 
-const Leaderboard = () => {
+const Leaderboard: React.FC<Props> = ({ navigation }) => {
     const [users, setUsers] = useState<User[]>([]);
 
     useEffect(() => {
@@ -22,12 +27,11 @@ const Leaderboard = () => {
                     const userData = usersData[userId];
                     return {
                         id: userId,
-                        email: userData.email || 'No email', // Correct use of email field
-                        username: userData.username || 'No username', // Correct use of username field
-                        points: userData.points || 0 // Default points if not available
+                        email: userData.email || 'No email',
+                        username: userData.username || 'No username',
+                        points: userData.points || 0
                     };
                 });
-                // Sorting users by points in descending order
                 loadedUsers.sort((a, b) => b.points - a.points);
                 setUsers(loadedUsers);
             } else {
@@ -40,18 +44,79 @@ const Leaderboard = () => {
             console.error("Firebase read failed: " + error.message);
         });
 
-        // Unsubscribe from the realtime listener when the component unmounts
         return () => off(usersRef, 'value', handleData);
     }, []);
 
     return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Text>Leaderboard Screen</Text>
-            {users.map(user => (
-                <Text key={user.id}>{user.username}: {user.points}</Text> // Displaying username instead of email
-            ))}
-        </View>
+        <ImageBackground source={require('../../assets/space2.jpeg')} style={styles.container}>
+            <Text style={styles.title}>Leaderboard</Text>
+            <ScrollView>
+                <View style={styles.tableHeader}>
+                    <Text style={styles.headerText}>Rank</Text>
+                    <Text style={styles.headerText}>Username</Text>
+                    <Text style={styles.headerText}>Points</Text>
+                </View>
+                {users.map((user, index) => (
+                    <View key={user.id} style={styles.tableRow}>
+                        <Text style={styles.rowText}>{index + 1}</Text>
+                        <Text style={styles.rowText}>{user.username}</Text>
+                        <Text style={styles.rowText}>{user.points}</Text>
+                    </View>
+                ))}
+            </ScrollView>
+            <Button title="Back" onPress={() => navigation.goBack()} color="#FFAB91" />
+        </ImageBackground>
     );
 };
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 20,
+        width: '100%',
+        height: '100%',
+    },
+    title: {
+        fontFamily: 'Orbitron',
+        fontSize: 24,
+        color: '#FFFFFF',
+        marginBottom: 20,
+        textAlign: 'center',
+    },
+    tableHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        width: '100%',  // Ensure full width
+        borderBottomWidth: 1,
+        borderBottomColor: '#FFFFFF',
+        paddingBottom: 10,
+    },
+    headerText: {
+        flex: 1,
+        fontSize: 18,
+        color: '#FFFFFF',
+        fontWeight: 'bold',
+        fontFamily: 'Orbitron',  // Apply Orbitron to header text
+        textAlign: 'center',
+        paddingHorizontal: 5,  // Add horizontal padding
+    },
+    tableRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        width: '100%',  // Ensure each row matches the header width
+        paddingVertical: 10,
+    },
+    rowText: {
+        flex: 1,  // Even spacing
+        fontSize: 16,
+        color: '#FFFFFF',
+        fontFamily: 'Orbitron',  // Apply Orbitron to row text
+        textAlign: 'center',
+        paddingHorizontal: 5,  // Add horizontal padding for separation
+    }
+});
+
 
 export default Leaderboard;

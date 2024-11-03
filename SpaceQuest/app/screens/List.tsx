@@ -1,82 +1,5 @@
-// import React, { useState, useEffect } from 'react';
-// import { View, Button, Text, StyleSheet } from 'react-native';
-// import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
-// import { getDatabase, ref, onValue } from "firebase/database";
-
-// type Props = {
-//     navigation: StackNavigationProp<any>;
-// }
-
-// const List: React.FC<Props> = ({ navigation }) => {
-//     const auth = getAuth();
-//     const [username, setUsername] = useState<string>('');
-
-//     useEffect(() => {
-//         const unsubscribe = onAuthStateChanged(auth, (user) => {
-//             if (user) {
-//                 const usernameRef = ref(getDatabase(), 'users/' + user.uid + '/username');
-//                 onValue(usernameRef, (snapshot) => {
-//                     setUsername(snapshot.val() || 'Anonymous'); // Fallback to 'Anonymous' if no username is set
-//                 }, {
-//                     onlyOnce: true // Listen only once for the username
-//                 });
-//             } else {
-//                 setUsername(''); // Clear username if no user is logged in
-//             }
-//         });
-
-//         return () => unsubscribe(); // Cleanup subscription
-//     }, []);
-
-//     const handleLogout = () => {
-//         signOut(auth).then(() => {
-//             // Possibly navigate to a login screen or update the UI to reflect logged out state
-//             setUsername('');
-//         }).catch((error) => {
-//             console.error('Logout failed:', error);
-//         });
-//     };
-
-//     return (
-//         <View style={styles.container}>
-//             <View style={styles.header}>
-//                 {username && <Text style={styles.username}>Welcome, {username}</Text>}
-//                 <Button onPress={handleLogout} title="Logout" />
-//             </View>
-//             <View style={styles.body}>
-//                 <Button onPress={() => navigation.navigate('Details')} title="Open Details" />
-//                 <Button onPress={() => navigation.navigate('Leaderboard')} title="Open Leaderboard" />
-//             </View>
-//         </View>
-//     );
-// };
-
-// const styles = StyleSheet.create({
-//     container: {
-//         flex: 1,
-//         justifyContent: 'center',
-//         alignItems: 'center'
-//     },
-//     header: {
-//         width: '100%',
-//         flexDirection: 'row',
-//         justifyContent: 'space-between',
-//         alignItems: 'center',
-//         padding: 10
-//     },
-//     username: {
-//         fontSize: 18
-//     },
-//     body: {
-//         flex: 1,
-//         justifyContent: 'center',
-//         alignItems: 'center'
-//     }
-// });
-
-// export default List;
 import React, { useState, useEffect } from 'react';
-import { View, Button, Text, StyleSheet, ImageBackground } from 'react-native';
+import { View, Button, Text, StyleSheet, ImageBackground, TouchableOpacity } from 'react-native';
 import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
 import { getDatabase, ref, onValue } from "firebase/database";
 
@@ -108,11 +31,17 @@ const List = ({ navigation }) => {
         <ImageBackground source={require('../../assets/space2.jpeg')} style={styles.container}>
             <View style={styles.header}>
                 {username && <Text style={styles.username}>Welcome, {username}</Text>}
-                <Button color="#4CAF50" onPress={handleLogout} title="Logout" />
+                <Button color="#FF0000" onPress={handleLogout} title="Logout" />
             </View>
             <View style={styles.body}>
-                <Button color="#81D4FA" onPress={() => navigation.navigate('Details')} title="Open Details" />
-                <Button color="#FFAB91" onPress={() => navigation.navigate('Leaderboard')} title="Open Leaderboard" />
+                <TouchableOpacity onPress={() => navigation.navigate('Leaderboard')} style={styles.moonButton}>
+                    <ImageBackground source={require('../../assets/moon.png')} style={styles.moonImage}>
+                        <Text style={styles.moonText}>Open Leaderboard</Text>
+                    </ImageBackground>
+                </TouchableOpacity>
+                <View style={styles.detailsButtonContainer}>
+                    <Button color="#81D4FA" onPress={() => navigation.navigate('Details')} title="Open Details" />
+                </View>
             </View>
         </ImageBackground>
     );
@@ -123,8 +52,8 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        width: '100%', // Ensure full width
-        height: '100%' // Ensure full height
+        width: '100%',
+        height: '100%'
     },
     header: {
         width: '100%',
@@ -132,7 +61,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: 10,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)' // Semi-transparent overlay
+        backgroundColor: 'rgba(0, 0, 0, 0.5)'
     },
     username: {
         fontSize: 18,
@@ -140,8 +69,34 @@ const styles = StyleSheet.create({
     },
     body: {
         flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        width: '100%'
+    },
+    moonButton: {
+        margin: 10,
+        width: 150,
+        height: 150,  // Adjusted for a more circular appearance
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    moonImage: {
+        width: '100%',
+        height: '100%',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    moonText: {
+        color: 'white',
+        fontSize: 18,
+        fontWeight: 'bold',  // Making the font bold for better visibility
+        textAlign: 'center',  // Ensuring text is centered
+        backgroundColor: 'transparent'  // Ensuring no background color affects visibility
+    },
+    detailsButtonContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     }
 });
 
