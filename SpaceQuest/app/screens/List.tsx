@@ -39,8 +39,12 @@ const List = ({ navigation }) => {
                         <Text style={styles.moonText}>Open Leaderboard</Text>
                     </ImageBackground>
                 </TouchableOpacity>
-                <View style={styles.detailsButtonContainer}>
-                    <Button color="#81D4FA" onPress={() => navigation.navigate('Details')} title="Open Details" />
+                <View style={styles.optionsContainer}>
+                    <Button color="#81D4FA" onPress={() => navigation.navigate('Details')} title="Open Details" style={styles.optionButton} />
+                    <Button color="#81D4FA" onPress={() => navigation.navigate('Game1')} title="Open Game1" style={styles.optionButton} />
+                    <Button color="#81D4FA" onPress={() => navigation.navigate('Game2')} title="Open Game2" style={styles.optionButton} />
+                    <Button color="#81D4FA" onPress={() => navigation.navigate('Game3')} title="Open Game3" style={styles.optionButton} />
+
                 </View>
             </View>
         </ImageBackground>
@@ -50,7 +54,7 @@ const List = ({ navigation }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         alignItems: 'center',
         width: '100%',
         height: '100%'
@@ -68,17 +72,18 @@ const styles = StyleSheet.create({
         color: 'white'
     },
     body: {
-        flex: 1,
         flexDirection: 'row',
+        justifyContent: 'center',
         alignItems: 'center',
-        width: '100%'
+        width: '100%',
+        padding: 20
     },
     moonButton: {
-        margin: 10,
         width: 150,
-        height: 150,  // Adjusted for a more circular appearance
+        height: 150,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        marginRight: 20 // Added right margin for spacing
     },
     moonImage: {
         width: '100%',
@@ -89,14 +94,16 @@ const styles = StyleSheet.create({
     moonText: {
         color: 'white',
         fontSize: 18,
-        fontWeight: 'bold',  // Making the font bold for better visibility
-        textAlign: 'center',  // Ensuring text is centered
-        backgroundColor: 'transparent'  // Ensuring no background color affects visibility
+        fontWeight: 'bold',
+        textAlign: 'center',
+        backgroundColor: 'transparent'
     },
-    detailsButtonContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
+    optionsContainer: {
+        flexDirection: 'column', // Stack buttons vertically
+        alignItems: 'center'
+    },
+    optionButton: {
+        marginBottom: 10 // Space between buttons
     }
 });
 
