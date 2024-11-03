@@ -96,7 +96,7 @@ const Game2 = ({ navigation }) => {
         <View style={styles.quizContainer}>
           <Text style={styles.resultText}>You have completed the quiz!</Text>
           <Text style={styles.resultText}>Your Score: {points}</Text>
-          <Text style={styles.resultText}>Total Points: {totalPoints + points}</Text>
+          <Text style={styles.resultText}>Total Points: {totalPoints}</Text>
           <Button title="Play Again" onPress={() => {
             setCurrentQuestionIndex(0);
             setSelectedAnswer(null);

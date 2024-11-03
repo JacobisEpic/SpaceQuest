@@ -63,15 +63,19 @@ const List = ({ navigation }) => {
                 <View style={styles.asteroidContainer}>
                     <TouchableOpacity onPress={() => navigation.navigate('Game1')} style={styles.asteroidButton}>
                         <Image source={require('../../assets/Asteroid.png')} style={styles.asteroidImage} />
-                        <Text style={styles.asteroidText}>Game 1</Text>
+                        <Text style={styles.asteroidText}>Image Capture</Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => navigation.navigate('Game2')} style={styles.asteroidButton}>
                         <Image source={require('../../assets/Asteroid.png')} style={styles.asteroidImage} />
-                        <Text style={styles.asteroidText}>Game 2</Text>
+                        <Text style={styles.asteroidText}>Trivia</Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => navigation.navigate('Details')} style={styles.asteroidButton}>
                         <Image source={require('../../assets/Asteroid.png')} style={styles.asteroidImage} />
-                        <Text style={styles.asteroidText}>Game 3</Text>
+                        <Text style={styles.asteroidText}>Puzzle</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => navigation.navigate('Game3')} style={styles.asteroidButton}>
+                        <Image source={require('../../assets/Asteroid.png')} style={styles.asteroidImage} />
+                        <Text style={styles.asteroidText}>I-Spy</Text>
                     </TouchableOpacity>
                 </View>
             </View>
