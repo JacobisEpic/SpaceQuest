@@ -8,10 +8,10 @@ import Profile from './app/screens/Profile';
 import Game1 from './app/screens/Game1';
 import Game2 from './app/screens/Game2';
 import Game3 from './app/screens/Game3';
-import Leaderboard from './app/screens/Leaderboard'; // Make sure Leaderboard is correctly imported
+import Leaderboard from './app/screens/Leaderboard';
 import { StatusBar } from 'expo-status-bar';
 import { onAuthStateChanged } from 'firebase/auth';
-import { app, auth, database } from './FirebaseConfig'; // Ensure Firebase Auth is correctly set up
+import { app, auth, database } from './FirebaseConfig';
 
 
 const Stack = createNativeStackNavigator();
@@ -23,7 +23,7 @@ function App() {
     const unsubscribe = onAuthStateChanged(auth, currentUser => {
       setUser(currentUser);
     });
-    return () => unsubscribe(); // Cleanup subscription on component unmount
+    return () => unsubscribe(); // cleanup subscription on component unmount
   }, []);
 
   return (
