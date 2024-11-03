@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jigsaw Puzzle Game</title>
+    <style>
+        #puzzle-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+            gap: 2px;
+            width: 400px;
+            height: 400px;
+            position: relative;
+        }
+        .piece {
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Upload Image to Create Puzzle</h1>
+    <input type="file" id="imageInput" accept="image/*">
+    <button id="createPuzzleButton">Create Puzzle</button>
+    <button id="checkPuzzleButton">Check Puzzle</button>
+    
+    <div id="puzzle-container"></div>
+
+    <script>
+        let correctOrder = []; // array to hold the correct order of pieces
+
+        document.getElementById('createPuzzleButton').addEventListener('click', function() {
+            const input = document.getElementById('imageInput');
+            if (input.files.length === 0) {
+                alert('Please upload an image file.');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('image', input.files[0]);
+
+            fetch('/create_puzzle', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    const container = document.getElementById('puzzle-container');
+                    container.innerHTML = '';  // clear previous pieces
+                    correctOrder = data.correctOrder; // store the correct order
+                    data.pieces.forEach(piece => {
+                        const img = document.createElement('img');
+                        img.src = piece;
+                        img.classList.add('piece');
+                        img.draggable = true;
+                        img.addEventListener('dragstart', dragStart);
+                        img.addEventListener('dragover', dragOver);
+                        img.addEventListener('drop', drop);
+                        container.appendChild(img);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+
+        let dragged;
+
+        function dragStart(event) {
+            dragged = event.target;
+            event.dataTransfer.effectAllowed = "move";
+        }
+
+        function dragOver(event) {
+            event.preventDefault();
+        }
+
+        function drop(event) {
+            event.preventDefault();
+            if (event.target.className === 'piece') {
+                const tempSrc = dragged.src;
+                dragged.src = event.target.src;
+                event.target.src = tempSrc;
+            }
+        }
+
+        document.getElementById('checkPuzzleButton').addEventListener('click', function() {
+            const currentOrder = Array.from(document.querySelectorAll('#puzzle-container .piece')).map((piece, index) => {
+                // get the position based on the image src
+                const srcParts = piece.src.split('/').pop().split('_'); // piece_row_col.png
+                const row = parseInt(srcParts[1]);
+                const col = parseInt(srcParts[2].split('.')[0]);
+                return { row, col };
+            });
+
+            const isCorrect = currentOrder.every((pos, index) => {
+                return pos.row === correctOrder[index].row && pos.col === correctOrder[index].col;
+            });
+
+            if (isCorrect) {
+                alert('Congratulations! The puzzle is correctly completed!');
+            } else {
+                alert('The puzzle is not correct. Try again!');
+            }
+        });
+    </script>
+</body>
+</html>
