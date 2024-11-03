@@ -3,18 +3,23 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="static/js/function.js"></script>
     </head>
     <body>
+        <p id="message"></p>
+
         <h1>Welcome to a sample User Page</h1>
 
         <p>The Picture String is: {{ picture_string }}</p>  <!-- Display the string here -->
 
-            <!-- Conditional rendering based on picture_string -->
-    {% if picture_string == "empty" %}
-        <p>Empty String!!</p>
-    {% else %}
-        <p>Now you have a chance to respond!</p>
-    {% endif %}
+        {% if picture_string == "empty" %}
+            <p>Empty String!!</p>
+        {% else %}
+            <p>The User Responded!</p>
 
+            <label for="name">Return a Message!</label><br>
+            <input type="text" id="usrResponse" name="usrResponse" placeholder="Your Guess!"><br>
+            <button onClick = "sendResponse("usrResponse","./database/userResponse.txt")">Send Response!!</button><br>
+        {% endif %}
     </body>
 </html>

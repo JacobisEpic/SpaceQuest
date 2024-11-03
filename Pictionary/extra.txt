@@ -1,3 +1,0 @@
-        {% comment %} <label for="name">Place Your Guess!!</label><br>
-        <input type="text" id="name" name="name" placeholder="Your Guess!!"><br>
-        <button onClick = "sendResponse()">Send Response!!</button><br> {% endcomment %}

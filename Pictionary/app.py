@@ -7,20 +7,30 @@ app = Flask(__name__)
 # Templates
 @app.route('/astronaut')
 def astronaut():
-    
-    
-    return render_template('astronaut.html')
+    stringResponseFromDatabase = handleReadFromDatabase("./database/userResponse.txt")
+
+    return render_template('astronaut.html', userResponse_string = stringResponseFromDatabase)
+
+
 
 @app.route('/user')
 def user():
-    stringResponseFromDatabase = handleReadFromDatabase()
+    stringResponseFromDatabase = handleReadFromDatabase("./database/content.txt")
+    print("The boolean value of the two is: " + str("empty" == stringResponseFromDatabase))
+    print(stringResponseFromDatabase)
+
     return render_template('user.html', picture_string = stringResponseFromDatabase)
+
+
 
 
 #Database Functions
 @app.route('/writeToDatabase', methods=['POST'])
 def writeToDatabase():
     requestData = request.get_json()  # Get the JSON data from the request body
+    
+    print(requestData)
+    
     handleWriteToDatabase(requestData)
     
     return "Text is written to database"
