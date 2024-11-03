@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Platform, View, Text, StyleSheet, ImageBackground, TouchableOpacity, Image, ActivityIndicator, Button, ScrollView } from 'react-native';
+import { Platform, View, Text, StyleSheet, ImageBackground, TouchableOpacity, Image, ActivityIndicator, ScrollView } from 'react-native';
+import { useFonts } from 'expo-font';
 import { Camera } from 'expo-camera';
 import { getAuth } from "firebase/auth";
 import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { getDatabase, ref as dbRef, update } from 'firebase/database';
-import { v4 as uuidv4 } from 'uuid'; // To generate unique file names
+import { v4 as uuidv4 } from 'uuid';
 
 const Game1 = ({ navigation }) => {
   const [hasPermission, setHasPermission] = useState(null);
@@ -14,6 +15,10 @@ const Game1 = ({ navigation }) => {
   const videoRef = useRef(null);
   const cameraRef = useRef(null);
   const auth = getAuth();
+
+  const [fontsLoaded] = useFonts({
+    Orbitron: require('../../assets/fonts/Orbitron-VariableFont_wght.ttf'),
+  });
 
   useEffect(() => {
     if (isWeb) {
@@ -44,15 +49,13 @@ const Game1 = ({ navigation }) => {
       context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
       const imageDataUrl = canvas.toDataURL('image/png');
       setCapturedPhoto(imageDataUrl);
-      await uploadPhotoToFirebase(imageDataUrl);
     } else if (cameraRef.current) {
       const photo = await cameraRef.current.takePictureAsync();
       setCapturedPhoto(photo.uri);
-      await uploadPhotoToFirebase(photo.uri);
     }
   };
 
-  const uploadPhotoToFirebase = async (photoUri) => {
+  const uploadPhotoToFirebase = async (photoUri, game) => {
     try {
       const storage = getStorage();
       const database = getDatabase();
@@ -60,7 +63,7 @@ const Game1 = ({ navigation }) => {
 
       if (user) {
         const uniqueFileName = uuidv4() + '.jpg';
-        const storageReference = storageRef(storage, `photos/${uniqueFileName}`);
+        const storageReference = storageRef(storage, `photos/${game}/${uniqueFileName}`);
         
         const response = await fetch(photoUri);
         const blob = await response.blob();
@@ -68,8 +71,7 @@ const Game1 = ({ navigation }) => {
         await uploadBytes(storageReference, blob);
         const downloadURL = await getDownloadURL(storageReference);
 
-        // Save the download URL to the user's data in the database
-        const photoRef = dbRef(database, `users/${user.uid}/photos`);
+        const photoRef = dbRef(database, `users/${user.uid}/${game}`);
         await update(photoRef, {
           [uniqueFileName]: {
             url: downloadURL,
@@ -77,7 +79,7 @@ const Game1 = ({ navigation }) => {
           }
         });
 
-        console.log('Photo uploaded and URL saved:', downloadURL);
+        console.log(`Photo uploaded to ${game} and URL saved:`, downloadURL);
       } else {
         console.error("No user is logged in.");
       }
@@ -85,6 +87,10 @@ const Game1 = ({ navigation }) => {
       console.error("Failed to upload photo:", error);
     }
   };
+
+  if (!fontsLoaded) {
+    return <ActivityIndicator size="large" color="#FFFFFF" />;
+  }
 
   if (hasPermission === null && !isWeb) {
     return <ActivityIndicator size="large" color="#FFFFFF" />;
@@ -96,10 +102,12 @@ const Game1 = ({ navigation }) => {
 
   return (
     <ImageBackground source={require('../../assets/space2.jpeg')} style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Game1 Screen</Text>
-        <Button title="Back" color="#FF0000" onPress={() => navigation.goBack()} />
-      </View>
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <Text style={styles.backButtonText}>Back</Text>
+      </TouchableOpacity>
+      
+      <Text style={styles.title}>Image Capture</Text>
+
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.cameraContainer}>
           {isWeb ? (
@@ -128,6 +136,21 @@ const Game1 = ({ navigation }) => {
           <View style={styles.capturedPhotoContainer}>
             <Text style={styles.capturedPhotoText}>Captured Photo:</Text>
             <Image source={{ uri: capturedPhoto }} style={styles.capturedPhoto} />
+            
+            <View style={styles.uploadButtonsContainer}>
+              <TouchableOpacity
+                style={styles.uploadButton}
+                onPress={() => uploadPhotoToFirebase(capturedPhoto, 'jigsaw')}
+              >
+                <Text style={styles.uploadButtonText}>Upload to Jigsaw</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.uploadButton}
+                onPress={() => uploadPhotoToFirebase(capturedPhoto, 'iSpy')}
+              >
+                <Text style={styles.uploadButtonText}>Upload to I Spy</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         )}
       </ScrollView>
@@ -141,17 +164,27 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  header: {
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  backButton: {
+    position: 'absolute',
+    top: 20,
+    left: 20,
+    backgroundColor: '#FF0000',
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+    zIndex: 1,
+  },
+  backButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontFamily: 'Orbitron', // Apply Orbitron font
   },
   title: {
-    fontSize: 24,
+    fontSize: 64,
     color: 'white',
+    textAlign: 'center',
+    marginTop: 80,
+    fontFamily: 'Orbitron', // Apply Orbitron font
   },
   scrollContainer: {
     alignItems: 'center',
@@ -178,6 +211,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: 'center',
     marginTop: 20,
+    fontFamily: 'Orbitron', // Apply Orbitron font
   },
   captureButton: {
     backgroundColor: '#81D4FA',
@@ -189,6 +223,7 @@ const styles = StyleSheet.create({
   captureButtonText: {
     color: '#FFFFFF',
     fontSize: 18,
+    fontFamily: 'Orbitron', // Apply Orbitron font
   },
   capturedPhotoContainer: {
     alignItems: 'center',
@@ -198,11 +233,33 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 16,
     marginBottom: 5,
+    fontFamily: 'Orbitron', // Apply Orbitron font
   },
   capturedPhoto: {
     width: 200,
     height: 200,
     borderRadius: 10,
+  },
+  uploadButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 15,
+    width: '80%',
+  },
+  uploadButton: {
+    backgroundColor: '#4CAF50',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    marginHorizontal: 10,
+    alignItems: 'center',
+  },
+  uploadButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    textAlign: 'center',
+    fontFamily: 'Orbitron', // Apply Orbitron font
   },
 });
 
