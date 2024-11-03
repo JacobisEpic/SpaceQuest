@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="static/js/function.js"></script>
+</head>
+<body>
+    <h1>Welcome to a sample Astronaut Page</h1><br>
+
+    <label for="name">Input your "picture":</label><br>
+    <input type="text" id="name" name="name" placeholder="picture"><br>
+
+    <button onClick = "sendPicture()">send Picure!!</button><br>
+
+
+    {% if picture_string == "empty" %}
+        <p>Empty String!!</p>
+    {% else %}
+        <p>Now you have a chance to respond!</p>
+
+        <label for="name">Take your Guess!</label><br>
+        <input type="text" id="yourResponse" name="yourResponse" placeholder="Your Response!"><br>
+        <button onClick = "sendResponse("yourResponse", "./database/astronautResponse.txt")">Send Response!!</button><br>
+    {% endif %}
+
+</body>
+</html>
