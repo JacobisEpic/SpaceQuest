@@ -70,7 +70,7 @@ const Leaderboard: React.FC<Props> = ({ navigation }) => {
                     <Text style={styles.noDataText}>No users to display</Text>
                 )}
             </ScrollView>
-            <Button title="Back" onPress={() => navigation.goBack()} color="#FFAB91" />
+            <Button title="Back" onPress={() => navigation.goBack()} color="#FF0000" />
         </ImageBackground>
     );
 };

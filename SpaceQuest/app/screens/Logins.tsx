@@ -81,8 +81,8 @@ const Login = () => {
                     <ActivityIndicator size="large" color="#4CAF50" />
                 ) : (
                     <View style={styles.buttonContainer}>
-                        <Button title="Create Account" onPress={handleSignUp} color="#FFAB91" />
-                        <Button title="Login" onPress={handleLogin} color="#81D4FA" />
+                        <Button title="Create Account" onPress={handleSignUp} color="#0000FF" />
+                        <Button title="Login" onPress={handleLogin} color="#0000FF" />
                     </View>
                 )}
             </KeyboardAvoidingView>

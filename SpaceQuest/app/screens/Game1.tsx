@@ -106,7 +106,7 @@ const Game1 = ({ navigation }) => {
         <Text style={styles.backButtonText}>Back</Text>
       </TouchableOpacity>
       
-      <Text style={styles.title}>Game1 Screen</Text>
+      <Text style={styles.title}>Image Capture</Text>
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.cameraContainer}>
@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Orbitron', // Apply Orbitron font
   },
   title: {
-    fontSize: 24,
+    fontSize: 64,
     color: 'white',
     textAlign: 'center',
     marginTop: 80,

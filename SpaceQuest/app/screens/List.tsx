@@ -69,7 +69,7 @@ const List = ({ navigation }) => {
                         <Image source={require('../../assets/Asteroid.png')} style={styles.asteroidImage} />
                         <Text style={styles.asteroidText}>Game 2</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigation.navigate('Game3')} style={styles.asteroidButton}>
+                    <TouchableOpacity onPress={() => navigation.navigate('Details')} style={styles.asteroidButton}>
                         <Image source={require('../../assets/Asteroid.png')} style={styles.asteroidImage} />
                         <Text style={styles.asteroidText}>Game 3</Text>
                     </TouchableOpacity>
