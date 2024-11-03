@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Platform, View, Text, StyleSheet, ImageBackground, TouchableOpacity, Image, ActivityIndicator, Button, ScrollView } from 'react-native';
 import { Camera } from 'expo-camera';
+import { getAuth } from "firebase/auth";
+import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { getDatabase, ref as dbRef, update } from 'firebase/database';
+import { v4 as uuidv4 } from 'uuid'; // To generate unique file names
 
 const Game1 = ({ navigation }) => {
   const [hasPermission, setHasPermission] = useState(null);
@@ -9,6 +13,7 @@ const Game1 = ({ navigation }) => {
   const [isWeb, setIsWeb] = useState(Platform.OS === 'web');
   const videoRef = useRef(null);
   const cameraRef = useRef(null);
+  const auth = getAuth();
 
   useEffect(() => {
     if (isWeb) {
@@ -39,9 +44,45 @@ const Game1 = ({ navigation }) => {
       context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
       const imageDataUrl = canvas.toDataURL('image/png');
       setCapturedPhoto(imageDataUrl);
+      await uploadPhotoToFirebase(imageDataUrl);
     } else if (cameraRef.current) {
       const photo = await cameraRef.current.takePictureAsync();
       setCapturedPhoto(photo.uri);
+      await uploadPhotoToFirebase(photo.uri);
+    }
+  };
+
+  const uploadPhotoToFirebase = async (photoUri) => {
+    try {
+      const storage = getStorage();
+      const database = getDatabase();
+      const user = auth.currentUser;
+
+      if (user) {
+        const uniqueFileName = uuidv4() + '.jpg';
+        const storageReference = storageRef(storage, `photos/${uniqueFileName}`);
+        
+        const response = await fetch(photoUri);
+        const blob = await response.blob();
+
+        await uploadBytes(storageReference, blob);
+        const downloadURL = await getDownloadURL(storageReference);
+
+        // Save the download URL to the user's data in the database
+        const photoRef = dbRef(database, `users/${user.uid}/photos`);
+        await update(photoRef, {
+          [uniqueFileName]: {
+            url: downloadURL,
+            timestamp: Date.now(),
+          }
+        });
+
+        console.log('Photo uploaded and URL saved:', downloadURL);
+      } else {
+        console.error("No user is logged in.");
+      }
+    } catch (error) {
+      console.error("Failed to upload photo:", error);
     }
   };
 
@@ -118,7 +159,7 @@ const styles = StyleSheet.create({
   },
   cameraContainer: {
     width: '100%',
-    height: 400, // Adjusted height for the camera feed container
+    height: 400,
     backgroundColor: 'rgba(0, 0, 0, 0.3)',
     justifyContent: 'center',
     alignItems: 'center',
