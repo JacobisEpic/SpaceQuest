@@ -5,10 +5,14 @@ import Login from './app/screens/Logins'; // Ensure this is the correct path
 import List from './app/screens/List';
 import Details from './app/screens/Details';
 import Profile from './app/screens/Profile';
+import Game1 from './app/screens/Game1';
+import Game2 from './app/screens/Game2';
+import Game3 from './app/screens/Game3';
 import Leaderboard from './app/screens/Leaderboard'; // Make sure Leaderboard is correctly imported
 import { StatusBar } from 'expo-status-bar';
 import { onAuthStateChanged } from 'firebase/auth';
 import { app, auth, database } from './FirebaseConfig'; // Ensure Firebase Auth is correctly set up
+
 
 const Stack = createNativeStackNavigator();
 
@@ -30,6 +34,9 @@ function App() {
             <Stack.Screen name="List" component={List} />
             <Stack.Screen name="Details" component={Details} />
             <Stack.Screen name="Profile" component={Profile} />
+            <Stack.Screen name="Game1" component={Game1} />
+            <Stack.Screen name="Game2" component={Game2} />
+            <Stack.Screen name="Game3" component={Game3} />
             <Stack.Screen name="Leaderboard" component={Leaderboard} />
           </>
         ) : (
