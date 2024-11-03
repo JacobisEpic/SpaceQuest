@@ -13,8 +13,16 @@
 
     <button onClick = "sendPicture()">send Picure!!</button><br>
 
-    <!-- If you have sent a picture, then you can star looking for their response-->
 
+    {% if picture_string == "empty" %}
+        <p>Empty String!!</p>
+    {% else %}
+        <p>Now you have a chance to respond!</p>
+
+        <label for="name">Take your Guess!</label><br>
+        <input type="text" id="yourResponse" name="yourResponse" placeholder="Your Response!"><br>
+        <button onClick = "sendResponse("yourResponse", "./database/astronautResponse.txt")">Send Response!!</button><br>
+    {% endif %}
 
 </body>
 </html>
