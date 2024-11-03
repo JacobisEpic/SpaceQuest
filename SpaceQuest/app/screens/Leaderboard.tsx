@@ -7,6 +7,7 @@ interface User {
     id: string;
     email: string;
     points: number;
+    username: string;
 }
 
 const Leaderboard = () => {
@@ -21,8 +22,9 @@ const Leaderboard = () => {
                     const userData = usersData[userId];
                     return {
                         id: userId,
-                        email: userData.email || 'No email',
-                        points: userData.points || 0
+                        email: userData.email || 'No email', // Correct use of email field
+                        username: userData.username || 'No username', // Correct use of username field
+                        points: userData.points || 0 // Default points if not available
                     };
                 });
                 // Sorting users by points in descending order
@@ -46,7 +48,7 @@ const Leaderboard = () => {
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
             <Text>Leaderboard Screen</Text>
             {users.map(user => (
-                <Text key={user.id}>{user.email}: {user.points}</Text>
+                <Text key={user.id}>{user.username}: {user.points}</Text> // Displaying username instead of email
             ))}
         </View>
     );
