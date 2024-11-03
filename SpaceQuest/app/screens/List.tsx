@@ -53,6 +53,10 @@ const List = ({ navigation }) => {
                         <Image source={require('../../assets/moon.png')} style={styles.moonImage} />
                     </TouchableOpacity>
                     <Text style={styles.moonText}>Leaderboard</Text>
+                    <TouchableOpacity onPress={() => navigation.navigate('Profile')} style={styles.moonButton}>
+                        <Image source={require('../../assets/moon.png')} style={styles.moonImage} />
+                    </TouchableOpacity>
+                    <Text style={styles.moonText}>Profile</Text>
                 </View>
 
                 {/* Game Buttons as Asteroids */}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Platform, View, Text, StyleSheet, ImageBackground, TouchableOpacity, Image, ActivityIndicator, Button, ScrollView } from 'react-native';
+import { Platform, View, Text, StyleSheet, ImageBackground, TouchableOpacity, Image, ActivityIndicator, ScrollView } from 'react-native';
+import { useFonts } from 'expo-font';
 import { Camera } from 'expo-camera';
 import { getAuth } from "firebase/auth";
 import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
@@ -11,10 +12,13 @@ const Game1 = ({ navigation }) => {
   const [isCameraReady, setIsCameraReady] = useState(false);
   const [capturedPhoto, setCapturedPhoto] = useState(null);
   const [isWeb, setIsWeb] = useState(Platform.OS === 'web');
-  const [uploadChoice, setUploadChoice] = useState(null); // Track upload choice
   const videoRef = useRef(null);
   const cameraRef = useRef(null);
   const auth = getAuth();
+
+  const [fontsLoaded] = useFonts({
+    Orbitron: require('../../assets/fonts/Orbitron-VariableFont_wght.ttf'),
+  });
 
   useEffect(() => {
     if (isWeb) {
@@ -67,7 +71,6 @@ const Game1 = ({ navigation }) => {
         await uploadBytes(storageReference, blob);
         const downloadURL = await getDownloadURL(storageReference);
 
-        // Save the download URL to the specific game node in the user's data in the database
         const photoRef = dbRef(database, `users/${user.uid}/${game}`);
         await update(photoRef, {
           [uniqueFileName]: {
@@ -85,6 +88,10 @@ const Game1 = ({ navigation }) => {
     }
   };
 
+  if (!fontsLoaded) {
+    return <ActivityIndicator size="large" color="#FFFFFF" />;
+  }
+
   if (hasPermission === null && !isWeb) {
     return <ActivityIndicator size="large" color="#FFFFFF" />;
   }
@@ -95,10 +102,12 @@ const Game1 = ({ navigation }) => {
 
   return (
     <ImageBackground source={require('../../assets/space2.jpeg')} style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Game1 Screen</Text>
-        <Button title="Back" color="#FF0000" onPress={() => navigation.goBack()} />
-      </View>
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <Text style={styles.backButtonText}>Back</Text>
+      </TouchableOpacity>
+      
+      <Text style={styles.title}>Game1 Screen</Text>
+
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.cameraContainer}>
           {isWeb ? (
@@ -128,7 +137,6 @@ const Game1 = ({ navigation }) => {
             <Text style={styles.capturedPhotoText}>Captured Photo:</Text>
             <Image source={{ uri: capturedPhoto }} style={styles.capturedPhoto} />
             
-            {/* Upload buttons for Jigsaw and I Spy */}
             <View style={styles.uploadButtonsContainer}>
               <TouchableOpacity
                 style={styles.uploadButton}
@@ -156,17 +164,27 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  header: {
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  backButton: {
+    position: 'absolute',
+    top: 20,
+    left: 20,
+    backgroundColor: '#FF0000',
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+    zIndex: 1,
+  },
+  backButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontFamily: 'Orbitron', // Apply Orbitron font
   },
   title: {
     fontSize: 24,
     color: 'white',
+    textAlign: 'center',
+    marginTop: 80,
+    fontFamily: 'Orbitron', // Apply Orbitron font
   },
   scrollContainer: {
     alignItems: 'center',
@@ -193,6 +211,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: 'center',
     marginTop: 20,
+    fontFamily: 'Orbitron', // Apply Orbitron font
   },
   captureButton: {
     backgroundColor: '#81D4FA',
@@ -204,6 +223,7 @@ const styles = StyleSheet.create({
   captureButtonText: {
     color: '#FFFFFF',
     fontSize: 18,
+    fontFamily: 'Orbitron', // Apply Orbitron font
   },
   capturedPhotoContainer: {
     alignItems: 'center',
@@ -213,6 +233,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 16,
     marginBottom: 5,
+    fontFamily: 'Orbitron', // Apply Orbitron font
   },
   capturedPhoto: {
     width: 200,
@@ -221,7 +242,7 @@ const styles = StyleSheet.create({
   },
   uploadButtonsContainer: {
     flexDirection: 'row',
-    justifyContent: 'center', // Center the buttons within the container
+    justifyContent: 'center',
     alignItems: 'center',
     marginTop: 15,
     width: '80%',
@@ -231,15 +252,15 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,
-    marginHorizontal: 10, // Add horizontal spacing between buttons
-    alignItems: 'center', // Center the text within each button
+    marginHorizontal: 10,
+    alignItems: 'center',
   },
   uploadButtonText: {
     color: '#FFFFFF',
     fontSize: 16,
     textAlign: 'center',
+    fontFamily: 'Orbitron', // Apply Orbitron font
   },
-  
 });
 
 export default Game1;
