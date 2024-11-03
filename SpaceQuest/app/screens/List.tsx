@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     header: {
         width: '100%',
         alignItems: 'center',
-        paddingTop: 80, // Increased padding at the top for more margin
+        paddingTop: 80, // increases padding for more margin
         paddingBottom: 20,
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
         padding: 20,
     },
     leaderboardContainer: {
-        alignItems: 'center', // Center the text below the moon image
+        alignItems: 'center', // center text below moon image
         marginRight: 20,
     },
     moonButton: {
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         backgroundColor: 'transparent',
         fontFamily: 'Orbitron',
-        marginTop: 5, // Margin to separate text from the image
+        marginTop: 5, // margin to separate text from the image
     },
     asteroidContainer: {
         flexDirection: 'column',

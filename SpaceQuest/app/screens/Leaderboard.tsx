@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
         height: '100%',
         paddingTop: 80,
         paddingBottom: 80,
-        backgroundColor: 'black', // Ensures no white background shows through
+        backgroundColor: 'black', // no white background shows through
     },
     title: {
         fontFamily: 'Orbitron',

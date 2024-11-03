@@ -39,8 +39,8 @@ const Login = () => {
             const db = getDatabase();
             set(ref(db, 'users/' + userCredential.user.uid), {
                 email: email,
-                username: username,  // Store the username
-                points: 0  // Default points
+                username: username,
+                points: 0
             });
             console.log('User registration and initial data setup successful');
         } catch (error) {
@@ -107,11 +107,11 @@ const styles = StyleSheet.create({
     },
     keyboardView: {
         width: '100%',
-        alignItems: 'center'  // Centers the children horizontally
+        alignItems: 'center'
     },
     input: {
         height: 40,
-        width: '80%',  // Controls the width of the input fields
+        width: '80%',
         marginBottom: 12,
         borderWidth: 1,
         borderColor: '#555',
@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
     buttonContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        width: '80%',  // Matches the input field width
+        width: '80%',
     }
 });
 

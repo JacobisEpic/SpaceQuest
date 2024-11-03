@@ -9,19 +9,19 @@ const Game3 = () => {
   const [imageUrl, setImageUrl] = useState('');
   const [userInput, setUserInput] = useState('');
   const [randomNum, setRandomNum] = useState(0);
-  const [feedbackMessage, setFeedbackMessage] = useState(null); // State for feedback message
-  const [isCorrect, setIsCorrect] = useState(null); // Track if the answer is correct or not
-  const navigation = useNavigation(); // For back navigation
+  const [feedbackMessage, setFeedbackMessage] = useState(null);
+  const [isCorrect, setIsCorrect] = useState(null);
+  const navigation = useNavigation();
 
   useEffect(() => {
     const fetchImage = async () => {
       try {
-        // Generate a random number between 1 and 3 to select an image
+        // gen random number between 1 and 3 to select an images
         const randomNumber = Math.floor(Math.random() * 3) + 1;
         setRandomNum(randomNumber);
 
         const storage = getStorage();
-        const imageRef = ref(storage, `${randomNumber}.jpg`); // Assumes image names are 1.jpg, 2.jpg, etc.
+        const imageRef = ref(storage, `${randomNumber}.jpg`);
 
         const url = await getDownloadURL(imageRef);
         setImageUrl(url);
@@ -54,7 +54,7 @@ const Game3 = () => {
           }
         });
 
-        // Set feedback message and its color based on correctness
+        // set feedback message and its color based on correctness (red for incorrect and green for correct)
         if (correctAnswer) {
           setFeedbackMessage('Correct!');
           setIsCorrect(true);
@@ -68,7 +68,7 @@ const Game3 = () => {
       Alert.alert("Error", "Could not check the answer. Please try again.");
     }
 
-    setUserInput(''); // Clear input after submission
+    setUserInput('');
   };
 
   return (
@@ -95,7 +95,6 @@ const Game3 = () => {
           <Text style={styles.guessButtonText}>Submit Guess</Text>
         </TouchableOpacity>
         
-        {/* Display feedback message below the 'Submit Guess' button */}
         {feedbackMessage && (
           <Text style={[styles.feedbackMessage, isCorrect ? styles.correctText : styles.incorrectText]}>
             {feedbackMessage}
@@ -137,7 +136,7 @@ const styles = StyleSheet.create({
     width: '90%',
     backgroundColor: 'rgba(0, 0, 0, 0.6)', // semi-transparent background
     borderRadius: 10,
-    marginTop: 100, // Adjust for the back button
+    marginTop: 100,
   },
   title: {
     fontSize: 64,
@@ -147,8 +146,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   image: {
-    width: 300, // Increased width for a larger image
-    height: 300, // Increased height for a larger image
+    width: 300,
+    height: 300,
     marginBottom: 20,
   },
   loadingText: {
@@ -160,7 +159,7 @@ const styles = StyleSheet.create({
   feedbackMessage: {
     fontSize: 18,
     fontFamily: 'Orbitron',
-    marginTop: 10, // Space from the button above
+    marginTop: 10,
   },
   correctText: {
     color: 'green',

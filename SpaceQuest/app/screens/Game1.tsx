@@ -177,14 +177,14 @@ const styles = StyleSheet.create({
   backButtonText: {
     color: '#FFFFFF',
     fontSize: 16,
-    fontFamily: 'Orbitron', // Apply Orbitron font
+    fontFamily: 'Orbitron',
   },
   title: {
     fontSize: 64,
     color: 'white',
     textAlign: 'center',
     marginTop: 80,
-    fontFamily: 'Orbitron', // Apply Orbitron font
+    fontFamily: 'Orbitron',
   },
   scrollContainer: {
     alignItems: 'center',
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: 'center',
     marginTop: 20,
-    fontFamily: 'Orbitron', // Apply Orbitron font
+    fontFamily: 'Orbitron',
   },
   captureButton: {
     backgroundColor: '#81D4FA',
@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
   captureButtonText: {
     color: '#FFFFFF',
     fontSize: 18,
-    fontFamily: 'Orbitron', // Apply Orbitron font
+    fontFamily: 'Orbitron',
   },
   capturedPhotoContainer: {
     alignItems: 'center',
@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 16,
     marginBottom: 5,
-    fontFamily: 'Orbitron', // Apply Orbitron font
+    fontFamily: 'Orbitron',
   },
   capturedPhoto: {
     width: 200,
@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 16,
     textAlign: 'center',
-    fontFamily: 'Orbitron', // Apply Orbitron font
+    fontFamily: 'Orbitron',
   },
 });
 

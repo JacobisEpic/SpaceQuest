@@ -10,8 +10,8 @@ const Game2 = ({ navigation }) => {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [loading, setLoading] = useState(true);
   const [points, setPoints] = useState(0);
-  const [totalPoints, setTotalPoints] = useState(0); // Total points from Firebase
-  const [hasUpdatedPoints, setHasUpdatedPoints] = useState(false); // Flag to ensure points are only added once
+  const [totalPoints, setTotalPoints] = useState(0); // pulls total points from Firebase
+  const [hasUpdatedPoints, setHasUpdatedPoints] = useState(false);
 
   const auth = getAuth();
   const user = auth.currentUser;
@@ -19,7 +19,7 @@ const Game2 = ({ navigation }) => {
   useEffect(() => {
     fetchTriviaQuestions();
     if (user) {
-      fetchUserPoints(); // Fetch the user's current total points when the component mounts
+      fetchUserPoints(); // fetch the user's current total points when the component mounts
     }
   }, []);
 
@@ -41,8 +41,8 @@ const Game2 = ({ navigation }) => {
         const pointsRef = ref(database, `users/${user.uid}/points`);
         const snapshot = await get(pointsRef);
         if (snapshot.exists()) {
-            console.log("Fetched points from Firebase:", snapshot.val()); // Log the points value
-            setTotalPoints(snapshot.val() || 0); // Set total points from Firebase
+            console.log("Fetched points from Firebase:", snapshot.val()); // log point vals
+            setTotalPoints(snapshot.val() || 0);
         } else {
             console.log('No points data available');
         }
@@ -54,10 +54,10 @@ const Game2 = ({ navigation }) => {
   const handleAnswerSelect = (answer) => {
     setSelectedAnswer(answer);
     if (answer === questions[currentQuestionIndex].correct_answer) {
-      setPoints(points + 1); // Increment points for correct answers
+      setPoints(points + 1); // increment points for correct answers
     }
 
-    // Move to the next question after a short delay
+    // delay before next question
     setTimeout(() => {
       setSelectedAnswer(null);
       setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
@@ -71,11 +71,11 @@ const Game2 = ({ navigation }) => {
         const pointsRef = ref(database, `users/${user.uid}/points`);
         const updatedPoints = totalPoints + points;
 
-        // Use set instead of update to directly set the points value
+        // directly set the points value
         await set(pointsRef, updatedPoints);
         console.log('Points updated successfully in Firebase');
         setTotalPoints(updatedPoints);
-        setHasUpdatedPoints(true); // Set flag to true to prevent re-adding points
+        setHasUpdatedPoints(true); // set flag to true to prevent re-adding points
       } catch (error) {
         console.error('Failed to update points:', error);
       }
@@ -89,7 +89,7 @@ const Game2 = ({ navigation }) => {
   }
 
   if (currentQuestionIndex >= questions.length) {
-    // Game is complete; show results and update Firebase
+    // game finished -- show results and update Firebase
     savePointsToDatabase();
     return (
       <ImageBackground source={require('../../assets/space2.jpeg')} style={styles.container}>
@@ -101,7 +101,7 @@ const Game2 = ({ navigation }) => {
             setCurrentQuestionIndex(0);
             setSelectedAnswer(null);
             setPoints(0);
-            setHasUpdatedPoints(false); // Reset the flag for a new game
+            setHasUpdatedPoints(false);
           }} />
           <Button title="Back to List" onPress={() => navigation.navigate('List')} color="#FFAB91" />
         </View>
